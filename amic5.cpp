@@ -10,6 +10,7 @@
 #include <set>
 #include <forward_list>
 #include <memory>
+#include <stdexcept>
 
 namespace hset {
 
@@ -23,7 +24,7 @@ namespace hset {
             node*  rightNode;
             node*  parentNode;
 
-            node(ValueType val = ValueType()) : key(val), height(1), leftNode(nullptr), rightNode(nullptr), parentNode(nullptr) {}
+            explicit node(ValueType val = ValueType()) : key(val), height(1), leftNode(nullptr), rightNode(nullptr), parentNode(nullptr) {}
         };
 
         node*  root = nullptr;
@@ -357,14 +358,20 @@ namespace hset {
         template<typename ForwardIt>
         Set(ForwardIt first, ForwardIt last) {
             while (first != last) {
-                insert(*first);
+                try {
+                    insert(*first);
+                }
+                catch (std::exception e) {
+                    ClearSet();
+                    throw e;
+                }
                 ++first;
             }
         }
 
-        Set(const std::initializer_list<const ValueType>& ValList) : Set(ValList.begin(), ValList.end()) {}
+        explicit Set(const std::initializer_list<const ValueType>& ValList) : Set(ValList.begin(), ValList.end()) {}
 
-        Set(const Set& otherSet) : Set(otherSet.begin(), otherSet.end()) {}
+        explicit Set(const Set& otherSet) : Set(otherSet.begin(), otherSet.end()) {}
 
         ~Set() {
             ClearSet();
