@@ -113,13 +113,15 @@ namespace hset {
                 return new node(newKey);
             }
             if (newKey < curNode->key) {
-                curNode->leftNode = InsertImpl(curNode->leftNode, newKey);
+                node* tmpNode = InsertImpl(curNode->leftNode, newKey);
+                curNode->leftNode = tmpNode;
                 if (curNode->leftNode != nullptr) {
                     curNode->leftNode->parentNode = curNode;
                 }
             }
             else if (curNode->key < newKey) {
-                curNode->rightNode = InsertImpl(curNode->rightNode, newKey);
+                node* tmpNode = InsertImpl(curNode->rightNode, newKey);
+                curNode->rightNode = tmpNode;
                 if (curNode->rightNode != nullptr) {
                     curNode->rightNode->parentNode = curNode;
                 }
@@ -363,6 +365,7 @@ namespace hset {
                 }
                 catch (std::exception e) {
                     ClearSet();
+                    delete endElem
                     throw e;
                 }
                 ++first;
