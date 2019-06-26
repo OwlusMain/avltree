@@ -110,7 +110,13 @@ namespace hset {
         node*  InsertImpl(node*  curNode, ValueType newKey) {
             if (curNode == nullptr) {
                 ++sz;
-                return new node(newKey);
+                try {
+                    return new node(newKey);
+                }
+                catch (std::exception e) {
+                    --sz;
+                    throw e;
+                }
             }
             if (newKey < curNode->key) {
                 node* tmpNode = InsertImpl(curNode->leftNode, newKey);
